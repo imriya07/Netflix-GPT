@@ -28,6 +28,11 @@
 - Update sore with Trailer Video Data
 - Embeded the youtube video and make it autoplay and mute
 - Tailwind CSS classes to make MainContainer it look awesome
+- Build Secondary Component
+- Build Movie Card
+- TMBD Image CDN URL
+- Made the Browse page amazing with tailwind css
+- Use popularMovies Custom Hook
 
  
 
