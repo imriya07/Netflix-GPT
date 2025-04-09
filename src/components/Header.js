@@ -1,11 +1,72 @@
-import React from 'react'
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import React, { useEffect } from 'react';
+import { auth } from '../utils/firebase';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUser, removeUser } from '../utils/userSlice';
+import { LOGO } from '../utils/constants';
 
 const Header = () => {
-  return (
-    <div className='absolute px-8 py-2 bg-gradient-to-b from-black z-10'>
-       <img className='w-44' src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1200px-Netflix_2015_logo.svg.png' alt='logo' />
-    </div>
-  )
-}
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
 
-export default Header
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+      })
+      .catch((error) => {
+        navigate('/error');
+      });
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
+        navigate("/browse")
+      } else {
+        dispatch(removeUser());
+        navigate("/")
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+  return (
+    <div className='absolute w-full px-4 md:px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between items-center'>
+      {/* Logo */}
+      <img
+        className='w-24 md:w-44'
+        src={LOGO}
+        alt='logo'
+      />
+
+      {/* User Section */}
+      {user && (
+        <div className='flex items-center space-x-3'>
+          <img
+            className='w-8 h-8 md:w-10 md:h-10 rounded'
+            alt='userIcon'
+            src={user?.photoURL}
+          />
+          <button
+            onClick={handleSignOut}
+            className='text-white text-sm md:text-base font-bold'
+          >
+            (Sign Out)
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Header;
