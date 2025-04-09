@@ -33,6 +33,11 @@
 - TMBD Image CDN URL
 - Made the Browse page amazing with tailwind css
 - Use popularMovies Custom Hook
+- GPT Search Feature
+- GPT Search Page
+-  GPT Search Bar
+- Multi-language Feature in our App
+- Integrate GPT APIs
 
  
 
